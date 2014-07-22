@@ -8,33 +8,32 @@ $(document).ready(function() {
 			allTriangles = [],
 			triangleColor = '',
 			canvasOffset = $('#canvas').offset(),
-			data = {};
-
-
+			data = {},
+			names = []
+console.log(localStorage.getItem('canvas-triangle'));
+	if (names.length !== 0) {
+		names.forEach(function(name) {
+			$('.saved-triangles').append('<option value="' + name +'">' + name +'</option>');
+		});
+	}
 
 	$('.save-canvas').on('click', function() {
 		var name = prompt('Save canvas as:');
-		localStorage.setItem("canvas-triangle",
+		names.push(name);
+		localStorage.setItem(name,
 			JSON.stringify({
 				option: name,
 				data: allTriangles
 			})
 		);
 
-		data = JSON.parse(localStorage.getItem("canvas-triangle"));
-		console.log(data);
-		console.log(data.option);
-		var selectTpl = $('#select-tpl').html();
-		var template = Handlebars.compile(selectTpl);
-	  var html = template({options: data});
-	  console.log(html);
-	  //var option = ['<option value="', name, '">', name, '</option>'];
-	  $('.saved-triangles').append(html);
+	  $('.saved-triangles').append('<option value="' + name +'">' + name +'</option>');
 	});
 
 	$('.clear-canvas').on('click', function(event) {
 		event.preventDefault();
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		allTriangles = [];
 	});
 
 	$('#canvas').on('mousedown', function(event) {
