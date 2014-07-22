@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Variable Names</title>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<div class="main">
+		<h2>Update Variable Names</h2>
+		<p class="error-message bg-danger"></p>
+
+	</div>
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="bower_components/handlebars/handlebars.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+	<script id="variable-names-tpl" type="text/x-handlebars-template">
+		{{#each variables}}
+			<div class="input-group clearfix">
+				<input type="text" class="variable-name" value="{{{name}}}">
+				<button class="btn btn-primary update" type="button" data-id="{{{nameId}}}" disabled="disabled">Update Name</button>
+			</div>
+		{{/each}}
+	</script>
+</body>
+</html>
