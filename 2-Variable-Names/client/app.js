@@ -21,7 +21,7 @@ $(document).ready(function() {
       datatype: 'json',
       data: JSON.stringify({
         name: name,
-        nameId: 120
+        nameId: nameId
       })
     }).done(function(data) {
       if (data.status === 'NAME_NOT_FOUND') {
