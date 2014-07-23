@@ -9,9 +9,12 @@
 		Select color: <input type="color" name="triangle-color" class="triangle-color"><br>
 		<button type="button" class="btn btn-primary clear-canvas">Clear Canvas</button>
 		<button type="button" class="btn btn-primary save-canvas">Save to local storage</button>
-		<select class="saved-triangles">
-			<option value="none">None</option>
-		</select>
+		<div class="input-group">
+			<select class="saved-triangles form-control">
+				<option value="none">None</option>
+			</select>
+			<button type="button" class="btn btn-primary load-canvas">Load!</button>
+		</div>
 	</div>
 	<canvas id='canvas' width='600' height='300' style="border: 4px solid">
     </canvas>
@@ -20,10 +23,5 @@
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/handlebars/handlebars.min.js"></script>
 	<script src="app.js"></script>
-	<script id="select-tpl" type="text/x-handlebars-template">
-		{{#each options}}
-			<option value="{{{option}}}">{{{option}}}</option>
-		{{/each}}
-	</script>
 </body>
 </html>

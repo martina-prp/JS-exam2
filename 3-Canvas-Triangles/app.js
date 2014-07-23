@@ -7,33 +7,80 @@ $(document).ready(function() {
 			triangleJson = [],
 			allTriangles = [],
 			triangleColor = '',
-			canvasOffset = $('#canvas').offset(),
-			data = {},
-			names = []
-console.log(localStorage.getItem('canvas-triangle'));
-	if (names.length !== 0) {
-		names.forEach(function(name) {
-			$('.saved-triangles').append('<option value="' + name +'">' + name +'</option>');
-		});
+			canvasOffset = $('#canvas').offset();
+
+	var tempData = localStorage.getItem('canvas-triangle');
+	var data = [];
+	if (tempData) {
+		data = JSON.parse(tempData);
+		data.forEach(function(obj) {
+			$('.saved-triangles').append('<option value="' + obj.option +'">' + obj.option +'</option>');
+		})
 	}
+
+	$('.load-canvas').on('click', function() {
+		var selected = $('.saved-triangles').val();
+		var tempData = localStorage.getItem('canvas-triangle');
+		var loadSelected = {},
+				p = {},
+				t = {},
+				temp = [],
+		    data = [];
+
+		resetWorkingArea();
+
+		if (tempData) {
+			data = JSON.parse(tempData);
+			loadSelected = data.filter(function(element) {
+				if (element.option === selected) {
+					return element;
+				}
+			});
+		}
+		if (loadSelected.length !== 0) {
+			loadSelected[0].data.forEach(function(triangle) {
+				var color = '';
+				triangle.forEach(function(point) {
+					point = JSON.parse(point);
+					color = point.color;
+					p = new Point(point.pointX, point.pointY, color, context);
+					temp.push(p);
+				});
+				t = new Triangle(temp[0], temp[1], temp[2], color, context);
+				t.draw();
+				temp = [];
+			});
+		}
+	});
 
 	$('.save-canvas').on('click', function() {
 		var name = prompt('Save canvas as:');
-		names.push(name);
-		localStorage.setItem(name,
-			JSON.stringify({
-				option: name,
-				data: allTriangles
-			})
-		);
-
-	  $('.saved-triangles').append('<option value="' + name +'">' + name +'</option>');
+		if (name) {
+			var tempData = localStorage.getItem('canvas-triangle'),
+					data = [];
+			if (tempData) {
+				data = JSON.parse(tempData);
+			}
+			var isExisting = data.some(function(element) {
+				return element.option === name;
+			});
+			if (!isExisting) {
+				data.push({
+					option: name,
+					data: allTriangles
+				});
+				localStorage.setItem('canvas-triangle', JSON.stringify(data));
+			  $('.saved-triangles').append('<option value="' + name +'">' + name +'</option>');
+			}
+			else {
+				alert('The name already exists!');
+			}
+		}
 	});
 
 	$('.clear-canvas').on('click', function(event) {
 		event.preventDefault();
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		allTriangles = [];
+		resetWorkingArea();
 	});
 
 	$('#canvas').on('mousedown', function(event) {
@@ -41,7 +88,7 @@ console.log(localStorage.getItem('canvas-triangle'));
 		var point = new Point(event.clientX - canvasOffset.left, event.clientY - canvasOffset.top, triangleColor, context);
 		point.print();
 		triangle.push(point);
-		triangleJson.push(JSON.stringify({pointX: point.x, pointY: point.y}));
+		triangleJson.push(JSON.stringify({pointX: point.x, pointY: point.y, color: triangleColor}));
 
 		if (triangle.length == 3) {
 			var trgl = new Triangle(triangle[0], triangle[1], triangle[2], triangleColor, context);
@@ -51,6 +98,13 @@ console.log(localStorage.getItem('canvas-triangle'));
 			triangleJson = [];
 		}
 	});
+
+	var resetWorkingArea = function() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		triangle = [];
+		allTriangles = [];
+		triangleColor = '';
+	}
 
 	function Point(x, y, color, context) {
 		this.x = x;
@@ -76,8 +130,8 @@ console.log(localStorage.getItem('canvas-triangle'));
 			this.context.moveTo(a.x, a.y);
 			this.context.lineTo(b.x, b.y);
 			this.context.lineTo(c.x, c.y);
-			this.context.fill();
 			this.context.fillStyle = this.color;
+			this.context.fill();
 		}
 	}
 });
